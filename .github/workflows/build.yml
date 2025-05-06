@@ -6,7 +6,7 @@ on:
       LLVM_VER:
         description: 'LLVM_VER (Specify LLVM Version)'
         required: true
-        default: '20'
+        default: '19'
       KERNEL_VER:
         description: 'KERNEL_VER (Specify XANMOD branch to build)'
         required: true
@@ -15,24 +15,33 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    name: "🚧 Build Xanmod for omen16"
 
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-          
+
       - name: Environment Variables
         run: |
-          echo 'LLVM_VER == > ${{ github.event.inputs.LLVM_VER }}'
           echo 'KERNEL_VER == > ${{ github.event.inputs.KERNEL_VER }}'
+
+      - name: Free up Disk Space
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
 
       - name: Install packages & setup
         run: |
           sudo apt update
           sudo apt purge firefox -y
           sudo apt upgrade
-          
+
           sudo apt install \
             wget \
             build-essential \
@@ -70,41 +79,16 @@ jobs:
 
       - name: Run Build
         run: |
-          cp config kernel/xanmod/arch/x86/configs/omen16_defconfig
-          cp zen4_clang.patch kernel/xanmod/
-          cd kernel/xanmod
-          echo " "
-          echo " "
-          echo "===="
-          echo "===="
-          echo "====patching for zen4===="
-          git apply zen4_clang.patch
-          echo "====done===="
-          echo "===="
-          echo "===="
-          echo " "
-          echo " "
-          make clean
-          rm -rf vmlinux-gdb.py
+          export KERNEL_VER=${{ github.event.inputs.KERNEL_VER }}
+          export LLVM_VER=${{ github.event.inputs.LLVM_VER}}
+          ./build.sh
 
-          ARGS='
-          CC=clang${LLVM_SUFFIX}
-          LD=ld.lld${LLVM_SUFFIX}
-          LLVM=1
-          LLVM_IAS=1
-          LLVM_SUFFIX=-${{ github.event.inputs.LLVM_VER }}
-          '
-          export LLVM_SUFFIX=-${{ github.event.inputs.LLVM_VER }}
-          make ${ARGS} omen16_defconfig
-          make ${ARGS} LOCALVERSION=-clang-${{ github.event.inputs.LLVM_VER }} deb-pkg -j$(nproc)
+      - name: Set Release Tag Output
+        id: release-tag
+        run: echo "NOW=$(date "+%y%m%d%H%M")" >> "$GITHUB_OUTPUT"
 
-          cd ..
-          cp xanmod/.config config
-          rm -rf xanmod *.gz *.dsc *.buildinfo *.changes 
-
-      - name: Upload kernel
-        uses: actions/upload-artifact@v4
+      - name: Create Release
+        uses: ncipollo/release-action@v1
         with:
-          name: Xanmod-${{ github.event.inputs.KERNEL_VER }}-${{ github.event.inputs.LLVM_VER }}
-          path: kernel/
-          compression-level: 0
+          artifacts: "./kernel/xanmod/*tar.xz"
+          tag: xanmod-${{ github.event.inputs.KERNEL_VER }}-${{ github.event.inputs.LLVM_VER}}-omen16-${{ steps.release-tag.outputs.NOW }}
