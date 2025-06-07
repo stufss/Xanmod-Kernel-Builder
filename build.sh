@@ -27,6 +27,7 @@ cd kernel/xanmod
 sed -i 's/KBUILD_CFLAGS += -O2/include \$(srctree)\/Makefile.custom/g' Makefile
 echo 'source "Kconfig.custom"' >> Kconfig
 make clean
+export KERNEL_VER_M=$(make kernelversion)
 rm -rf vmlinux-gdb.py
 ARGS='
 LLVM=1
@@ -38,4 +39,4 @@ make ${ARGS} omen16_defconfig omen16.config
 make ${ARGS} INSTALL_MOD_STRIP=1 dir-pkg -j$(nproc)
 echo -e "\nCompleted in $((SECONDS / 60))m $((SECONDS % 60))s"
 rm -rf tar-install/boot/vmlinux-*
-tar c ./tar-install/ | xz -T0 > xanmod-${KERNEL_VER}${LLVM_VER}-omen16.tar.xz
+tar c ./tar-install/ | xz -T0 > xanmod-${KERNEL_VER_M}${LLVM_VER}-omen16.tar.xz

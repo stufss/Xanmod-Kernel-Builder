@@ -85,10 +85,12 @@ jobs:
 
       - name: Set Release Tag Output
         id: release-tag
-        run: echo "NOW=$(date "+%y%m%d%H%M")" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "NOW=$(date "+%y%m%d%H%M")" >> "$GITHUB_OUTPUT"
+          echo "SUBVERSION=$(make -f kernel/xanmod/Makefile kernelversion)" >> "$GITHUB_OUTPUT"
 
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: "./kernel/xanmod/*tar.xz"
-          tag: xanmod-${{ github.event.inputs.KERNEL_VER }}-${{ github.event.inputs.LLVM_VER}}-omen16-${{ steps.release-tag.outputs.NOW }}
+          tag: xanmod-${{ steps.release-tag.outputs.SUBVERSION }}-${{ github.event.inputs.LLVM_VER}}-omen16-${{ steps.release-tag.outputs.NOW }}
