@@ -1,21 +1,23 @@
 # Maintainer: ghazzor <kartikhis8o@gmail.com>
-pkgname=linux-xanmod-omen16-bin
-
 download() {
-  OWNER="stuffs"
+  OWNER="stufss"
   REPO="Xanmod-Kernel-Builder"
   RELEASE_JSON=$(curl -s "https://api.github.com/repos/${OWNER}/${REPO}/releases/latest")
 
   ASSET_URL=$(echo "${RELEASE_JSON}" | jq -r '.assets[].browser_download_url' | grep omen16.tar.xz)
   echo "$ASSET_URL"
   echo $PWD
-  wget -nc ${ASSET_URL}
-  tar xvf *.tar.xz
+  FILE=$(echo "$ASSET_URL" | cut -f9 -d'/')
+  if [[ ! -e $FILE ]]; then
+    rm -rf *.tar.xz
+    aria2c ${ASSET_URL}
+  fi
+  [[ ! -d tar-install ]] && tar -xvf *.tar.xz
   export kver=$(basename tar-install/lib/modules/*xanmod1)
 }
 
 download
-
+pkgname=linux-xanmod-omen16-bin
 pkgver=$(echo $kver | cut -f1 -d'-')
 pkgrel=1
 pkgdesc='Pre-compiled Xanmod kernel with custom optimizations'
@@ -62,5 +64,4 @@ EOF
   rm -rf tar-install
   rm -rf "${pkgdir}/usr/lib/modules/$kver/build"
   rm -rf "${pkgdir}/boot/vmlinux-$kver"
-  rm -rf *.tar.gz
 }
