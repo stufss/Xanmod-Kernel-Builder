@@ -10,6 +10,6 @@ KBUILD_CFLAGS += -O2
 #       -mllvm -polly-invariant-load-hoisting
 
 #KBUILD_CFLAGS += -Xclang -load -Xclang LLVMPolly.so
-KBUILD_CFLAGS += -mllvm -inline-threshold=450
-KBUILD_CFLAGS += -mllvm -inlinehint-threshold=525
+KBUILD_CFLAGS += -mllvm -inline-threshold=275
+KBUILD_CFLAGS += -mllvm -inlinehint-threshold=375
 KBUILD_LDFLAGS += --lto-O2
