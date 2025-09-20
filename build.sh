@@ -1,11 +1,11 @@
 #!/bin/bash
 
 init_var() {
-  local var="$1"
-  if [ -z "${!var}" ]; then
-    export "$var"=$(grep "$var" build.config | cut -f2 -d'=')
-  fi
-  echo "$1=${!1}"
+	local var="$1"
+	if [ -z "${!var}" ]; then
+		export "$var"=$(grep "$var" build.config | cut -f2 -d'=')
+	fi
+	echo "$1=${!1}"
 }
 
 export ID_LIKE=$(grep ^ID_LIKE /etc/os-release | cut -d= -f2 | tr -d '"')
