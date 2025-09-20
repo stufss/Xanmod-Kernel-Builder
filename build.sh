@@ -26,7 +26,16 @@ cp Makefile.custom kernel/xanmod/
 cd kernel/xanmod
 sed -i 's/KBUILD_CFLAGS += -O2/include \$(srctree)\/Makefile.custom/g' Makefile
 echo 'source "Kconfig.custom"' >> Kconfig
-make clean
+# disable -O3 from arch/x86
+sed -i 's/-O3/-O2/g' arch/x86/Makefile
+sed -i 's/-Copt-level=3/-Copt-level=2/g' arch/x86/Makefile
+
+if [ "$1" = "-d" ]; then
+	echo "dirty"
+else
+	echo "cleaning" && make clean
+fi
+
 export KERNEL_VER_M=$(make kernelversion)
 rm -rf vmlinux-gdb.py
 ARGS='
