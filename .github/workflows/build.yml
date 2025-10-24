@@ -39,19 +39,17 @@ jobs:
       - name: Install packages & setup
         run: |
           sudo apt update
-          sudo apt purge firefox -y
-          sudo apt upgrade
-
           sudo apt install \
             wget \
-            build-essential \
+            bc \
             bison \
             flex \
+            xz-utils \
+            cpio \
+            zip \
+            make \
+            kmod \
             pkg-config \
-            qtcreator \
-            qtbase5-dev \
-            qt5-qmake \
-            qttools5-dev-tools \
             libssl-dev \
             libncurses-dev \
             git \
