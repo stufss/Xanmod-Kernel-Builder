@@ -6,11 +6,11 @@ on:
       LLVM_VER:
         description: 'LLVM_VER (Specify LLVM Version)'
         required: true
-        default: '20'
+        default: '21'
       KERNEL_VER:
         description: 'KERNEL_VER (Specify XANMOD branch to build)'
         required: true
-        default: '6.12'
+        default: '6.18'
 
 jobs:
   build:
