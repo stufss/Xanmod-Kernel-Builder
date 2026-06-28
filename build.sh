@@ -67,7 +67,7 @@ make modules \
     SYSSRC="$KERNEL_SRC" \
     SYSOUT="$KERNEL_OUT" \
     CC=clang${LLVM_S} \
-    -j$(nproc)
+    -j$(nproc) \
     LD=ld.lld \
     AR=llvm-ar \
     NM=llvm-nm \
