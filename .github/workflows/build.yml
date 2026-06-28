@@ -90,5 +90,5 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "./kernel/xanmod/*tar.xz"
+          artifacts: "./kernel/*tar.xz"
           tag: xanmod-${{ steps.release-tag.outputs.SUBVERSION }}-${{ github.event.inputs.LLVM_VER}}-omen16-${{ steps.release-tag.outputs.NOW }}
