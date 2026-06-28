@@ -68,11 +68,11 @@ make modules \
     SYSOUT="$KERNEL_OUT" \
     CC=clang${LLVM_S} \
     -j$(nproc) \
-    LD=ld.lld \
-    AR=llvm-ar \
-    NM=llvm-nm \
-    OBJCOPY=llvm-objcopy \
-    STRIP=llvm-strip \
+    LD=ld.lld${LLVM_S} \
+    AR=llvm-ar${LLVM_S} \
+    NM=llvm-nm${LLVM_S} \
+    OBJCOPY=llvm-objcopy${LLVM_S} \
+    STRIP=llvm-strip${LLVM_S} \
     LLVM=1 \
     LLVM_IAS=1 \
     -j$(nproc)
